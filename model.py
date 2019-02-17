@@ -1,8 +1,11 @@
-#from app import db
+from flask_sqlalchemy import SQLAlchemy
+from app import app
 import json
 
+db = SQLAlchemy(app)
+
 class Message(db.Model):
-    time_stamp = db.Column(db.Timestamp)
+    time_stamp = db.Column(db.DateTime)
     content = db.Column(db.String(512))
     author = db.Column(db.String(10), db.ForeignKey('person.user_id'))
     class_id = db.Column(db.Integer, db.ForeignKey('class.class_id'))
@@ -38,5 +41,4 @@ class Student(db.Model):
 class Class_TA(db.Model):
     ta_id = db.Column(db.String(10), db.ForeignKey('person.user_id'))
     class_num = db.Column(db.Integer, db.ForeignKey('class.class_id'))
-
 

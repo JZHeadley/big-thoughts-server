@@ -1,6 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
 import model
-from model import db
 from sqlalchemy.sql import text
 
 students = []

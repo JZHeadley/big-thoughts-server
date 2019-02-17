@@ -6,6 +6,11 @@ sid = os.getenv("TWILIO_SID")
 token = os.getenv("TWILIO_TOKEN")
 client = Client(sid, token)
 
+
+#######################################################
+###### CLASS NUMBER: (540) 486-2896 ###################
+#######################################################
+
 # List of tuples 
 # Tuples are arranged like so
 # (FromNumber, ToNumber)
@@ -52,3 +57,4 @@ def send_to_student(student_number, class_number, msg):
                     from_=class_number,
                     to=student_number
             )
+
