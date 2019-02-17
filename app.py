@@ -96,14 +96,14 @@ def get_user_by_ID(userID):
 
 @app.route('/tas/<taid>/classes', methods=["GET"])
 def get_class_list_by_taid_handler(taid):
-        query = Class_TA.query.join(Class, Class_TA.class_num == Class.class_num).filter_by(Class_TA.ta_id = taid)
+        #query = Class_TA.query.join(Class, Class_TA.class_num == Class.class_num).filter_by(Class_TA.ta_id = taid)
         return builtin_list(map(from_sql, query.all()))
 
 @app.route('/classes/<classID>', methods=["GET"])
 def get_class_members_handler(classID):
-        distinct = Message.query.filter_by(class_id == class_id).all()
-        query = Class.query.filter_by(user_id in distinct.user_id)
-        return builtin_list(map(from_sql, query.all()))
+        classmem = Message.query.filter_by(classID).all()
+        users = Person.query.join(Student.student_id in classmem.user_id).all()
+
 
 @app.route('/classes/<classID>/<userID>/messages', methods=["GET"])
 def get_message_history_handler():
