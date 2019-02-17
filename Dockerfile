@@ -5,13 +5,14 @@ WORKDIR /usr/src/app
 COPY Pipfile ./
 COPY Pipfile.lock ./
 
-RUN set -ex && pipenv install --deploy --system
+# RUN set -ex && pipenv install --deploy --system
+RUN pip install flask twilio flask-sockets flask-cors flask-sqlalchemy gunicorn psycopg2
 
 COPY . .
 
-EXPOSE 8000
+EXPOSE 5000
 
-ENV TWILIO_TOKEN a1157e60d68c0f0bf618c1b8580c1110
-ENV TWILIO_SID AC6c5a5b034372ecd01df7096d871dd72f                                                                                     
+ENV TWILIO_TOKEN 58779a2c0fb69b8a3fe2b939d0d50275
+ENV TWILIO_SID ACa419e2930a99b69f74d68a01ee360617                                                                                     
 
-CMD [ "gunicorn", "-b0.0.0.0:8000", "app:app" ]
+CMD [ "gunicorn", "-b0.0.0.0:5000", "app:app" ]

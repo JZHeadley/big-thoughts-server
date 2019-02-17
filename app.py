@@ -13,7 +13,7 @@ from sqlalchemy.orm import synonym
 from sqlalchemy import text
 import json
 
-classNumber = '+15404862896'
+classNumber = '+15402355581'
 DEBUG=True
 app = Flask(__name__,
             static_folder = "./dist/static",
@@ -103,7 +103,6 @@ def get_class_list_by_taid_handler(taid):
         res = db.engine.execute(text(query))
         classes = []
         for row in res:
-                print(row)
                 classes.append({
                         'classId': row[0],
                         'classNum': row[1],
@@ -144,9 +143,11 @@ def post_message_handler():
         send_to_student(json['phoneNumber'],classNumber, json['message'])
         return ""
 
+def register_student(student_number, class_number, vnumber, firstname, lastname):
+        pass
+
 @app.route('/sms', methods=["POST"])
 def text_handler():
-
         student_number = request.form['From']
         class_number = request.form['To']
         message_body = request.form['Body']
