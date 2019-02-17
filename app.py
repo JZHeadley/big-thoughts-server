@@ -131,8 +131,28 @@ def get_class_members_handler(classID):
 
 
 @app.route('/classes/<classID>/<userID>/messages', methods=["GET"])
-def get_message_history_handler():
-        return classID, userID
+def get_message_history_handler(classID, userID):
+        query = 'select * from message where class_id = ' + classID + ' and user_id = \'' + userID + '\''
+        name_query = 'select concat( first_name, \' \' , last_name) as full_name from person where user_id = \'' + userID + '\''
+        res = db.engine.execute(text(query))
+        name = db.engine.execute(text(name_query))
+        fullname = ""
+        for val in name:
+                print(val)
+                fullname += val[0]
+        classes = []
+        for row in res:
+                print(row)
+                classes.append({
+                        'timeStamp': str(row[0]),
+                        'content': row[1],
+                        'author': fullname,
+                        'classID': row[3],
+                        'messageID': row[4],
+                        'userID': row[5]
+                })
+        print(classes)
+        return json.dumps(classes)
 
 @app.route('/messages', methods=["POST"])
 def post_message_handler():
@@ -180,6 +200,22 @@ def secret():
 # @app.route('/<path:path>')
 def catch_all(path):
         return render_template("index.html")
+
+def process_msg(student_number, class_number, msg):
+        sid = Student.query(phone_number=student_number).first().student_id
+        cid = Class.query(class_num=class_number).first().class_id
+        mesg = {
+          'time_stamp': datetime.datetime,
+          'content': msg,
+          'author': sid,
+          'class_id': cid,
+          'message_id': None,
+          'user_id': sid
+        }
+        mess = Message(**mesg)
+        db.session.add(mess)
+        db.session.commit()
+        return None
 
 if __name__ == "__main__":
     from gevent import pywsgi
