@@ -6,6 +6,7 @@ sid = os.getenv("TWILIO_SID")
 token = os.getenv("TWILIO_TOKEN")
 client = Client(sid, token)
 
+
 #######################################################
 ###### CLASS NUMBER: (540) 486-2896 ###################
 #######################################################
@@ -40,22 +41,14 @@ def parsing_failure(student_number, class_number, body):
     msg = "We were unable to understand your message: " + body
     send_to_student(student_number, class_number, msg)
 
-
-
 def send_to_student(student_number, class_number, msg):
-
-    text(student_number, class_number, msg)
-
-def text(to, fro, msg) {
     message = client.messages \
                 .create(
                     body=msg,
-                    from_=fro,
-                    to=to
+                    from_=class_number,
+                    to=student_number
                 
                 )
-}
-
 
 
 
