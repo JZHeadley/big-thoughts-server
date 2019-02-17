@@ -12,7 +12,6 @@ from .query_logic import in_system, process_msg
 
 import json
 
-import json
 db = SQLAlchemy()
 class Message(db.Model):
     time_stamp = db.Column(db.Date())
