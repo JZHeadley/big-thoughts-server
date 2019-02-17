@@ -13,7 +13,7 @@ waiting_list = []
 
 def init_mesg(to, class_number):
     message = client.messages \
-                create(
+                .create(
                      body="Welcome to BigThoughts! Please send your V# and Full Name",
                      from_=class_number,
                      to=to
@@ -34,7 +34,7 @@ def parse_signature(from_number, to_number, body):
 
 def send_to_student(student_number, class_number, msg):
     message = client.messages \
-            create(
+            .create(
                     body=msg,
                     from_=class_number,
                     to=student_number
