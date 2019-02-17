@@ -8,7 +8,10 @@ def getClassListByTaid(taid):
   return res
 
 def in_system(student_number, class_number):
-  pass
+  return True
 
 def process_msg(student_number, class_number, msg):
-  pass
+  return
+
+def register_student(student_number, class_number, vnumber, firstname, lastname):
+  return
