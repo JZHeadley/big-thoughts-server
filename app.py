@@ -1,4 +1,4 @@
-from flask import Flask, redirect, request
+from flask import Flask, redirect, request, render_template
 from flask_sockets import Sockets
 from flask_cors import CORS
 from . import  get_model
@@ -55,15 +55,16 @@ def from_sql(row):
     data.pop('_sa_instance_state')
     return data
 DEBUG=True
-app = Flask(__name__)
+app = Flask(__name__,
+            static_folder = "./dist/static",
+            template_folder = "./dist")
 sockets = Sockets(app)
 CORS(app)
 
-@sockets.route('/echo')
-def echo_socket(ws):
-    while not ws.closed:
-        message = ws.receive()
-        ws.send(message)
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    return render_template("index.html")
 
 @sockets.route('/ws')
 def echo_socket(ws):
@@ -71,10 +72,6 @@ def echo_socket(ws):
         message = ws.receive()
         ws.send(message)
 
-
-@app.route('/hello')
-def hello():
-    return 'Hello World!'
 
 @app.route('/users/{userID}', methods=["GET"])
 def get_user_by_ID(userID):
