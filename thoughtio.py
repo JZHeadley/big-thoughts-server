@@ -16,13 +16,8 @@ client = Client(sid, token)
 # (FromNumber, ToNumber)
 waiting_list = []
 
-def init_msg(to_number, class_number):
-    message = client.messages \
-                .create(
-                     body="Welcome to BigThoughts! Please send your V# and Full Name so we can get you in the system first :)",
-                     from_=class_number,
-                     to=to_number
-                )
+def init_msg(student_number, class_number):
+    send_to_student(student_number, class_number, "Welcome to BigThoughts! Please send your V# and Full Name so we can get you in the system first :)",)
 
 def parse_signature(from_number, to_number, body):
     personal_info = body.split(' ')
@@ -43,12 +38,8 @@ def parse_signature(from_number, to_number, body):
     return False
 
 def parsing_failure(student_number, class_number, body):
-    message = client.messages \
-                .create(
-                     body="We were unable to understand your message: " + body,
-                     from_=class_number,
-                     to=student_number
-                )
+    msg = "We were unable to understand your message: " + body
+    send_to_student(student_number, class_number, msg)
 
 def send_to_student(student_number, class_number, msg):
     message = client.messages \
