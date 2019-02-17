@@ -96,7 +96,7 @@ def get_user_by_ID(userID):
 
 @app.route('/tas/<taid>/classes', methods=["GET"])
 def get_class_list_by_taid_handler(taid):
-        query = Class_TA.query.join(Class, Class_TA.class_num == Class.class_num).filter_by(Class_TA.ta_id == taid)
+        query = Class_TA.query.join(Class, Class_TA.class_num == Class.class_num).filter_by(Class_TA.ta_id = taid)
         return builtin_list(map(from_sql, query.all()))
 
 @app.route('/classes/<classID>', methods=["GET"])
