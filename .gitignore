@@ -3,3 +3,6 @@ __pycache__/
 Pipfile
 Pipfile.lock
 twilio_creds.json
+bin/*
+include/*
+lib/*
