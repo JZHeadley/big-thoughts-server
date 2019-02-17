@@ -15,6 +15,9 @@ def in_system(student_number, class_number):
   return False 
 
 def process_msg(student_number, class_number, msg):
+
+  
+
   return None
 
 def register_student(student_number, class_number, vnumber, firstname, lastname):
