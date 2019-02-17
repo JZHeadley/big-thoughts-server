@@ -89,6 +89,10 @@ def get_message_history_handler():
 
 @app.route('/messages', methods=["POST"])
 def post_message_handler():
+        json = request.json
+        class_name = json.classNumber
+        student_number = json.studentNumber
+        send_to_student(student_phone_number,class_phone_number, json.message):
         return ""
 
 @app.route('/sms', methods=["POST"])
