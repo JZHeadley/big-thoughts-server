@@ -30,9 +30,9 @@ def hello():
 def get_user_by_ID(userID):
         return userID
 
-@app.route('/{taid}/classes')
+@app.route('/{taid}/classes', methods=["GET"])
 def get_class_list_by_taid_handler(taid):
-        return getClassListByTaid
+        return getClassListByTaid(taid)
 
 @app.route('/ta/{taid}/classes', methods=["GET"])
 def populate_data_for_TA_handler(taid):
@@ -52,6 +52,8 @@ def post_message_handler():
 
 @app.route('/sms', methods=["POST"])
 def text_handler():
+
+        # Parse the twilio body
 
         if inSystem(from_number, To_numbers):
                 process_msg(from_number, to_number, body)

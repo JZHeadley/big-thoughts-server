@@ -10,6 +10,7 @@ flask = "*"
 twilio = "*"
 flask-sockets = "*"
 flask-cors = "*"
+flask-sqlalchemy = "*"
 
 [requires]
 python_version = "3.7"
