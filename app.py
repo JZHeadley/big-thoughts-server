@@ -12,6 +12,7 @@ from query_logic import in_system, process_msg
 from sqlalchemy.orm import synonym
 from sqlalchemy import text
 import json
+
 classNumber = '+15404862896'
 DEBUG=True
 app = Flask(__name__,

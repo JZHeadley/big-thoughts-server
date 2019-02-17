@@ -6,7 +6,6 @@ sid = os.getenv("TWILIO_SID")
 token = os.getenv("TWILIO_TOKEN")
 client = Client(sid, token)
 
-
 #######################################################
 ###### CLASS NUMBER: (540) 486-2896 ###################
 #######################################################
@@ -49,6 +48,4 @@ def send_to_student(student_number, class_number, msg):
                     to=student_number
                 
                 )
-
-
 
