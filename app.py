@@ -30,20 +30,24 @@ def hello():
 def get_user_by_ID(userID):
         return userID
 
+@app.route('/{taid}/classes')
+def get_class_list_by_taid_handler(taid):
+        return getClassListByTaid
+
 @app.route('/ta/{taid}/classes', methods=["GET"])
-def populate_data_for_TA(taid):
+def populate_data_for_TA_handler(taid):
         return taid
 
 @app.route('/classes/{classID}/members', methods=["GET"])
-def get_class_members(classID):
+def get_class_members_handler(classID):
         return classID
 
 @app.route('/classes/{classID}/{userID}/messages', methods=["GET"])
-def get_message_history():
+def get_message_history_handler():
         return classID, userID
 
 @app.route('/messages', methods=["POST"])
-def post_message():
+def post_message_handler():
         return ""
 
 @app.route('/sms', methods=["POST"])

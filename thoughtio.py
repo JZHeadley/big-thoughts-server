@@ -11,12 +11,12 @@ client = Client(account_sid, auth_token)
 # (FromNumber, ToNumber)
 waiting_list = []
 
-def init_mesg(to, class_number):
+def init_mesg(to_number, class_number):
     message = client.messages \
                 .create(
                      body="Welcome to BigThoughts! Please send your V# and Full Name",
                      from_=class_number,
-                     to=to
+                     to=to_number
                 )
 
 def parse_signature(from_number, to_number, body):
@@ -28,8 +28,10 @@ def parse_signature(from_number, to_number, body):
     if personal_info[0][0] not in ["V", "v"]:
         return True
 
+    ##############################
     # Send into to the database
-    
+    ##############################
+
     return False
 
 def send_to_student(student_number, class_number, msg):
