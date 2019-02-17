@@ -1,9 +1,19 @@
-from flask import Flask
+from flask import Flask, redirect, request
 from flask_sockets import Sockets
 from flask_cors import CORS
 from . import  get_model
 from flask_sqlalchemy import SQLAlchemy
 
+<<<<<<< HEAD
+=======
+from thoughtio import init_msg, parse_signature, parsing_failure
+from twilio.twiml.messaging_response import MessagingResponse
+from twilio import twiml
+
+from query_logic import in_system, process_msg
+
+import json
+>>>>>>> 7dde75ac6ff58a3dbe4803ac2773aa8c6ae1bfa4
 
 from .thoughtio import init_msg
 import json
@@ -100,21 +110,29 @@ def post_message_handler():
 @app.route('/sms', methods=["POST"])
 def text_handler():
 
-        # Parse the twilio body
+        student_number = request.form['From']
+        class_number = request.form['To']
+        message_body = request.form['Body']
 
-        if inSystem(from_number, To_numbers):
-                process_msg(from_number, to_number, body)
-                waiting_list.append((from_number, to_number))
-        elif (from_number, to_number) in waiting_list:
-                err = parse_signature(from_number, to_number, body)
+        if not student_number or not class_number or not message_body:
+                return
+
+        if in_system(student_number, class_numbers):
+                process_msg(student_number, class_number, body)
+                waiting_list.append((student_number, class_number))
+        elif (student_number, class_number) in waiting_list:
+                err = parse_signature(student_number, class_number, body)
 
                 if err is not None:
-                        parsing_failure(from_number, to_number)
+                        parsing_failure(student_number, class_number)
                 else:
-                        waiting_list.remove((from_number, to_number)) 
+                        waiting_list.remove((student_number, class_number)) 
         else:
-                init_msg(from_number, to_number)
+                init_msg(student_number, class_number)
 
+@app.route('/secret', methods=["GET"])
+def secret():
+        return redirect('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
 
 if __name__ == "__main__":
     from gevent import pywsgi

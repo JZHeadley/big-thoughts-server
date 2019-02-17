@@ -11,6 +11,7 @@ twilio = "*"
 flask-sockets = "*"
 flask-cors = "*"
 flask-sqlalchemy = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.7"
