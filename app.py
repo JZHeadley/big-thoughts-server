@@ -54,6 +54,7 @@ def from_sql(row):
     data['id'] = row.id
     data.pop('_sa_instance_state')
     return data
+
 DEBUG=True
 app = Flask(__name__,
             static_folder = "./dist/static",
@@ -112,7 +113,6 @@ def text_handler():
 
         if in_system(student_number, class_numbers):
                 process_msg(student_number, class_number, body)
-                waiting_list.append((student_number, class_number))
         elif (student_number, class_number) in waiting_list:
                 err = parse_signature(student_number, class_number, body)
 
@@ -122,6 +122,7 @@ def text_handler():
                         waiting_list.remove((student_number, class_number)) 
         else:
                 init_msg(student_number, class_number)
+                waiting_list.append((student_number, class_number))
 
 @app.route('/secret', methods=["GET"])
 def secret():
