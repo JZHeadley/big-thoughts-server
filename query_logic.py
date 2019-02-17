@@ -12,13 +12,7 @@ def in_system(student_number, class_number):
     if student[0] == student_number:
       return True
 
-  return False 
-
-def process_msg(student_number, class_number, msg):
-
-  
-
-  return None
+  return False
 
 def register_student(student_number, class_number, vnumber, firstname, lastname):
   # MY database

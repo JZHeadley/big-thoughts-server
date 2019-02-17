@@ -180,6 +180,22 @@ def secret():
 def catch_all(path):
         return render_template("index.html")
 
+def process_msg(student_number, class_number, msg):
+        sid = Student.query(phone_number=student_number).first().student_id
+        cid = Class.query(class_num=class_number).first().class_id
+        mesg = {
+          'time_stamp': datetime.datetime,
+          'content': msg,
+          'author': sid,
+          'class_id': cid,
+          'message_id': None,
+          'user_id': sid
+        }
+        mess = Message(**mesg)
+        db.session.add(mess)
+        db.session.commit()
+        return None
+
 if __name__ == "__main__":
     from gevent import pywsgi
     from geventwebsocket.handler import WebSocketHandler
