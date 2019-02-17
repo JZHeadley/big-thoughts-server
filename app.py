@@ -2,11 +2,13 @@ from flask import Flask, redirect, request, render_template
 from flask_sockets import Sockets
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-
+import os
+from twilio.rest import Client
+import datetime
 from twilio.twiml.messaging_response import MessagingResponse
 from twilio import twiml
 
-from thoughtio import init_msg, parse_signature, parsing_failure, send_to_student
+# from thoughtio import init_msg, parse_signature, parsing_failure, send_to_student
 
 from sqlalchemy.orm import synonym
 from sqlalchemy import text
@@ -162,9 +164,12 @@ def post_message_handler():
         send_to_student(json['phoneNumber'],classNumber, json['message'])
         return ""
 
-def register_student(student_number, class_number, vnumber, firstname, lastname):
-        pass
 def in_system(student_number, class_number):
+        query = 'select * from student where phone_number=\'' +student_number+'\''
+        res = db.engine.execute(text(query))
+        for row in res:
+                print(row)
+                return True
         return False
 
 waiting_list=[]
@@ -176,9 +181,7 @@ def text_handler():
         print(request.form)
 
         if in_system(student_number, class_number):
-
                 res = process_msg(student_number, class_number, message_body)
-
                 if res is not None:
                         send_to_student(student_number, class_number, res)
         elif (student_number, class_number) in waiting_list:
@@ -203,8 +206,20 @@ def catch_all(path):
         return render_template("index.html")
 
 def process_msg(student_number, class_number, msg):
-        sid = Student.query(phone_number=student_number).first().student_id
-        cid = Class.query(class_num=class_number).first().class_id
+        # sid = Student.query(phone_number=student_number).first().student_id
+        query = 'select student_id from student where phone_number=\'' +student_number+'\''
+        res = db.engine.execute(text(query))
+        sid = None
+
+        for row in res:
+                print(row[0])
+                sid = row[0]
+        query = 'select class_id from class where class_num=\'' +class_number+'\''
+        res = db.engine.execute(text(query))
+        cid = None
+        for row in res:
+                print(row[0])
+                cid = row[0]
         mesg = {
           'time_stamp': datetime.datetime,
           'content': msg,
@@ -217,6 +232,79 @@ def process_msg(student_number, class_number, msg):
         db.session.add(mess)
         db.session.commit()
         return None
+
+sid = os.getenv("TWILIO_SID")
+token = os.getenv("TWILIO_TOKEN")
+client = Client(sid, token)
+
+#######################################################
+###### CLASS NUMBER: (540) 486-2896 ###################
+#######################################################
+
+# List of tuples git
+# Tuples are arranged like so
+# (FromNumber, ToNumber)
+waiting_list = []
+
+def init_msg(student_number, class_number):
+    send_to_student(student_number, class_number, "Welcome to BigThoughts! Please send your V# and Full Name so we can get you in the system first :)",)
+
+def register_student(from_number, to_number, body, studentId,firstName,lastName):
+        query = 'select class_id from class where class_num=\'' +to_number+'\''
+        res = db.engine.execute(text(query))
+        cid = None
+
+        for row in res:
+                print(row[0])
+                cid = row[0]
+        print(cid)
+        query = 'insert into person(user_id,first_name,last_name) values(\''+studentId+'\',\''+firstName+'\',\''+lastName+'\')'
+        res = db.engine.execute(text(query))
+        query = 'insert into student(student_id,phone_number) values(\''+studentId+'\',\''+from_number+'\')'
+        res = db.engine.execute(text(query))
+        mesg = {
+          'time_stamp': str((datetime.datetime.now())),
+          'content': body,
+          'author': studentId,
+          'class_id': cid,
+          'message_id': None,
+          'user_id': studentId
+        }
+        mess = Message(**mesg)
+        db.session.add(mess)
+        db.session.commit()
+
+def parse_signature(from_number, to_number, body):
+    personal_info = body.split(' ')
+
+    # It's gotta be three things
+    if len(personal_info) != 3:
+        return True
+    
+    # It's gotta start with a V
+    if personal_info[0][0] not in ["V", "v"]:
+        return True
+
+    #############################
+    # Send into to the database 
+    #############################
+    register_student(from_number, to_number, personal_info, personal_info[0],personal_info[1],personal_info[2])
+
+    return False
+
+def parsing_failure(student_number, class_number, body):
+    msg = "We were unable to understand your message: " + body
+    send_to_student(student_number, class_number, msg)
+
+def send_to_student(student_number, class_number, msg):
+    message = client.messages \
+                .create(
+                    body=msg,
+                    from_=class_number,
+                    to=student_number
+                
+                )
+
 
 if __name__ == "__main__":
     from gevent import pywsgi
