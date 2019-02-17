@@ -51,6 +51,7 @@ def text_handler():
 
         if inSystem(from_number, To_numbers):
                 process_msg(from_number, to_number, body)
+                waiting_list.append((from_number, to_number))
         elif (from_number, to_number) in waiting_list:
                 err = parse_signature(from_number, to_number, body)
 

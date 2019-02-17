@@ -8,7 +8,7 @@ client = Client(account_sid, auth_token)
 
 # List of tuples 
 # Tuples are arranged like so
-# (ToNumber, FromNumber)
+# (FromNumber, ToNumber)
 waiting_list = []
 
 def init_mesg(to, class_number):
