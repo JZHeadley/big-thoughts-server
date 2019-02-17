@@ -6,6 +6,8 @@ from thoughtio import init_msg, parse_signature, parsing_failure
 from twilio.twiml.messaging_response import MessagingResponse
 from twilio import twiml
 
+from query_logic import in_system, process_msg
+
 DEBUG=True
 app = Flask(__name__)
 sockets = Sockets(app)
@@ -62,7 +64,7 @@ def text_handler():
         if not student_number or not class_number or not message_body:
                 return
 
-        if inSystem(from_number, to_numbers):
+        if in_system(student_number, class_numbers):
                 process_msg(student_number, class_number, body)
                 waiting_list.append((student_number, class_number))
         elif (student_number, class_number) in waiting_list:
