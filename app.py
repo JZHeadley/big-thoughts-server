@@ -24,7 +24,7 @@ def echo_socket(ws):
 
 @app.route('/hello')
 def hello():
-    return 'Hello World!
+    return 'Hello World!'
 
 @app.route('/users/{userID}', methods=["GET"])
 def get_user_by_ID(userID):
