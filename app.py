@@ -4,8 +4,6 @@ from flask_cors import CORS
 from . import  get_model
 from flask_sqlalchemy import SQLAlchemy
 
-<<<<<<< HEAD
-=======
 from thoughtio import init_msg, parse_signature, parsing_failure
 from twilio.twiml.messaging_response import MessagingResponse
 from twilio import twiml
@@ -13,7 +11,6 @@ from twilio import twiml
 from query_logic import in_system, process_msg
 
 import json
->>>>>>> 7dde75ac6ff58a3dbe4803ac2773aa8c6ae1bfa4
 
 from .thoughtio import init_msg
 import json
