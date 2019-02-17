@@ -112,10 +112,23 @@ def get_class_list_by_taid_handler(taid):
         print(classes)
         return json.dumps(classes)
 
-@app.route('/classes/<classID>', methods=["GET"])
+@app.route('/classes/<classID>/students', methods=["GET"])
 def get_class_members_handler(classID):
-        classmem = Message.query.filter_by(classID).all()
-        users = Person.query.join(Student.student_id in classmem.user_id).all()
+        query = 'select p.first_name, p.last_name, s.phone_number, p.user_id from person as p join student as s on p.user_id = s.student_id where p.user_id in (select user_id from message where class_id = \'' + classID + '\')'
+        res = db.engine.execute(text(query))
+        classes = []
+        for row in res:
+                print(row)
+                classes.append({
+                        'studentId': row[3],
+                        'firstName': row[0],
+                        'lastName': row[1],
+                        'phoneNumber': row[2]
+                })
+        print(classes)
+        return json.dumps(classes)
+        
+
 
 
 @app.route('/classes/<classID>/<userID>/messages', methods=["GET"])
