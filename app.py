@@ -1,6 +1,9 @@
 from flask import Flask
 from flask_sockets import Sockets
 from flask_cors import CORS
+
+from thoughtio import init_msg
+
 DEBUG=True
 app = Flask(__name__)
 sockets = Sockets(app)
@@ -21,7 +24,7 @@ def echo_socket(ws):
 
 @app.route('/hello')
 def hello():
-    return 'Hello World!
+    return 'Hello World!'
 
 @app.route('/users/{userID}', methods=["GET"])
 def get_user_by_ID(userID):
@@ -48,6 +51,7 @@ def text_handler():
 
         if inSystem(from_number, To_numbers):
                 process_msg(from_number, to_number, body)
+                waiting_list.append((from_number, to_number))
         elif (from_number, to_number) in waiting_list:
                 err = parse_signature(from_number, to_number, body)
 
