@@ -61,10 +61,6 @@ app = Flask(__name__,
 sockets = Sockets(app)
 CORS(app)
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def catch_all(path):
-    return render_template("index.html")
 
 @sockets.route('/ws')
 def echo_socket(ws):
@@ -126,6 +122,11 @@ def text_handler():
 @app.route('/secret', methods=["GET"])
 def secret():
         return redirect('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+
+@app.route('/', defaults={'path': ''})
+# @app.route('/<path:path>')
+def catch_all(path):
+    return render_template("index.html")
 
 if __name__ == "__main__":
     from gevent import pywsgi
