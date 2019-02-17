@@ -131,8 +131,28 @@ def get_class_members_handler(classID):
 
 
 @app.route('/classes/<classID>/<userID>/messages', methods=["GET"])
-def get_message_history_handler():
-        return classID, userID
+def get_message_history_handler(classID, userID):
+        query = 'select * from message where class_id = ' + classID + ' and user_id = \'' + userID + '\''
+        name_query = 'select concat( first_name, \' \' , last_name) as full_name from person where user_id = \'' + userID + '\''
+        res = db.engine.execute(text(query))
+        name = db.engine.execute(text(name_query))
+        fullname = ""
+        for val in name:
+                print(val)
+                fullname += val[0]
+        classes = []
+        for row in res:
+                print(row)
+                classes.append({
+                        'timeStamp': str(row[0]),
+                        'content': row[1],
+                        'author': fullname,
+                        'classID': row[3],
+                        'messageID': row[4],
+                        'userID': row[5]
+                })
+        print(classes)
+        return json.dumps(classes)
 
 @app.route('/messages', methods=["POST"])
 def post_message_handler():
