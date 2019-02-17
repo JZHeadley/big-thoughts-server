@@ -12,6 +12,7 @@ flask-sockets = "*"
 flask-cors = "*"
 flask-sqlalchemy = "*"
 gunicorn = "*"
+pyscopg2 = "*"
 
 [requires]
 python_version = "3.7"

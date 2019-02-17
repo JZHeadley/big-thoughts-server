@@ -6,12 +6,12 @@ from flask_sqlalchemy import SQLAlchemy
 from twilio.twiml.messaging_response import MessagingResponse
 from twilio import twiml
 
-from thoughtio import init_msg, parse_signature, parsing_failure
+from thoughtio import init_msg, parse_signature, parsing_failure, send_to_student
 from query_logic import in_system, process_msg
 
 from sqlalchemy.orm import synonym
 import json
-
+classNumber = '+15404862896'
 DEBUG=True
 app = Flask(__name__,
             static_folder = "./dist/static",
@@ -111,6 +111,11 @@ def get_message_history_handler():
 
 @app.route('/messages', methods=["POST"])
 def post_message_handler():
+        global classNumber
+        json = request.json
+        class_name = json['classId']
+        student_number = json['studentNumber']
+        send_to_student(json['phoneNumber'],classNumber, json['message'])
         return ""
 
 @app.route('/sms', methods=["POST"])
