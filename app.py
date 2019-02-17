@@ -1,6 +1,9 @@
 from flask import Flask
 from flask_sockets import Sockets
 from flask_cors import CORS
+
+from thoughtio import init_msg
+
 DEBUG=True
 app = Flask(__name__)
 sockets = Sockets(app)

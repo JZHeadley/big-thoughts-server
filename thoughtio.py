@@ -17,4 +17,25 @@ def init_mesg(to, class_number):
                      body="Welcome to BigThoughts! Please send your V# and Full Name",
                      from_=class_number,
                      to=to
-                 )
+                )
+
+def parse_signature(from_number, to_number, body):
+    personal_info = body.split(' ')
+
+    if len(personal_info) != 3:
+        return True
+    
+    if personal_info[0][0] not in ["V", "v"]:
+        return True
+
+    # Send into to the database
+    
+    return False
+
+def send_to_student(student_number, class_number, msg):
+    message = client.messages \
+            create(
+                    body=msg,
+                    from_=class_number,
+                    to=student_number
+            )
