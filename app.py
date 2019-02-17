@@ -4,15 +4,14 @@ from flask_cors import CORS
 from . import  get_model
 from flask_sqlalchemy import SQLAlchemy
 
-from .thoughtio import init_msg, parse_signature, parsing_failure
 from twilio.twiml.messaging_response import MessagingResponse
 from twilio import twiml
 
+from .thoughtio import init_msg, parse_signature, parsing_failure
 from .query_logic import in_system, process_msg
 
 import json
 
-import json
 db = SQLAlchemy()
 class Message(db.Model):
     time_stamp = db.Column(db.Date())
@@ -54,7 +53,6 @@ def from_sql(row):
     data['id'] = row.id
     data.pop('_sa_instance_state')
     return data
-
 
 DEBUG=True
 app = Flask(__name__,
@@ -110,7 +108,6 @@ def text_handler():
 
         if in_system(student_number, class_numbers):
                 process_msg(student_number, class_number, body)
-                waiting_list.append((student_number, class_number))
         elif (student_number, class_number) in waiting_list:
                 err = parse_signature(student_number, class_number, body)
 
@@ -120,6 +117,7 @@ def text_handler():
                         waiting_list.remove((student_number, class_number)) 
         else:
                 init_msg(student_number, class_number)
+                waiting_list.append((student_number, class_number))
 
 @app.route('/secret', methods=["GET"])
 def secret():
