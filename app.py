@@ -21,7 +21,27 @@ def echo_socket(ws):
 
 @app.route('/')
 def hello():
-    return 'Hello World!'
+    return 'Hello World!
+
+@app.route('/users/{userID}')
+def get_user_by_ID():
+        return ""
+
+@app.route('/ta/{taid}/classes')
+def populate_data_for_TA():
+        return ""
+
+@app.route('/classes/{classID}/members')
+def get_class_members():
+        return ""
+
+@app.route('/classes/{classID}/{userID}/messages')
+def get_message_history():
+        return ""
+
+@app.route('/messages/{content, author, classID, userID}')
+def post_message():
+        return ""
 
 
 if __name__ == "__main__":
