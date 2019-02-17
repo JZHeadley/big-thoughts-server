@@ -43,10 +43,13 @@ def parsing_failure(student_number, class_number, body):
 
 def send_to_student(student_number, class_number, msg):
     message = client.messages \
-            .create(
+                .create(
                     body=msg,
                     from_=class_number,
                     to=student_number
-            )
+                
+                )
+
+
 
 
