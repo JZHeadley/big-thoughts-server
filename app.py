@@ -10,6 +10,7 @@ from thoughtio import init_msg, parse_signature, parsing_failure, send_to_studen
 from query_logic import in_system, process_msg
 
 from sqlalchemy.orm import synonym
+from sqlalchemy import text
 import json
 classNumber = '+15404862896'
 DEBUG=True
@@ -59,7 +60,7 @@ class Student(db.Model):
 class Class_TA(db.Model):
     __tablename__ = 'class_ta'
     ta_id = db.Column(db.String(10), db.ForeignKey('person.user_id'), primary_key = True)
-    class_num = db.Column(db.Integer, db.ForeignKey('class.class_id'), primary_key = True)
+    class_id = db.Column(db.Integer, db.ForeignKey('class.class_id'), primary_key = True)
     id = synonym("ta_id")
 
 class Person(db.Model):
@@ -96,8 +97,19 @@ def get_user_by_ID(userID):
 
 @app.route('/tas/<taid>/classes', methods=["GET"])
 def get_class_list_by_taid_handler(taid):
-        query = Class_TA.query.join(Class, Class_TA.class_num == Class.class_num).filter_by(Class_TA.ta_id = taid)
-        return builtin_list(map(from_sql, query.all()))
+        # query = Class_TA.query.join(Class, Class_TA.class_num == Class.class_num).filter_by(Class_TA.ta_id == taid)
+        query = 'select * from class where class_id IN (select class_id FROM class_ta where ta_id=\'' + taid + '\')'
+        res = db.engine.execute(text(query))
+        classes = []
+        for row in res:
+                print(row)
+                classes.append({
+                        'classId': row[0],
+                        'classNum': row[1],
+                        'className': row[2]
+                })
+        print(classes)
+        return json.dumps(classes)
 
 @app.route('/classes/<classID>', methods=["GET"])
 def get_class_members_handler(classID):
