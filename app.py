@@ -9,40 +9,67 @@ from twilio import twiml
 from thoughtio import init_msg, parse_signature, parsing_failure
 from query_logic import in_system, process_msg
 
+from sqlalchemy.orm import synonym
 import json
 
+DEBUG=True
+app = Flask(__name__,
+            static_folder = "./dist/static",
+            template_folder = "./dist")
+
+sockets = Sockets(app)
+CORS(app)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:bigthoughtsthoughtsbig@34.73.68.172/bigthoughts'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy()
+db.init_app(app)
+
 class Message(db.Model):
+    __tablename__ = 'message'
     time_stamp = db.Column(db.Date())
     content = db.Column(db.String(512))
     author = db.Column(db.String(10), db.ForeignKey('person.user_id'))
     class_id = db.Column(db.Integer, db.ForeignKey('class.class_id'))
     message_id = db.Column(db.Integer, primary_key = True)
     user_id = db.Column(db.String(10), db.ForeignKey('student.student_id'))
+    id = synonym("message_id")
 
 class Class(db.Model):
+    __tablename__ = 'class'
     class_id = db.Column(db.Integer, primary_key = True)
     class_num = db.Column(db.String(30))
     class_name = db.Column(db.String(80))
+    id = synonym("class_id")
 
 
 class TA(db.Model):
+    __tablename__ = 'ta'
     ta_id = db.Column(db.String(10), db.ForeignKey('person.user_id'), primary_key = True)
+    id = synonym("ta_id")
 
 
 class Student(db.Model):
+    __tablename__ = 'student'
     student_id = db.Column(db.String(10), db.ForeignKey('person.user_id'), primary_key = True)
     phone_number = db.Column(db.String(30))
+    id = synonym("student_id")
 
 
 class Class_TA(db.Model):
+    __tablename__ = 'class_ta'
     ta_id = db.Column(db.String(10), db.ForeignKey('person.user_id'), primary_key = True)
     class_num = db.Column(db.Integer, db.ForeignKey('class.class_id'), primary_key = True)
+    id = synonym("ta_id")
 
 class Person(db.Model):
-    user_id = db.Column(db.String(10), primary_key = True)
-    first_name = db.Column(db.String(30))
-    last_name = db.Column(db.String(30))
+    __tablename__ = 'person'
+    user_id = db.Column('user_id', db.String(10), primary_key = True)
+    first_name = db.Column('first_name', db.String(30))
+    last_name = db.Column('last_name', db.String(30))
+    id = synonym("user_id")
+    def toJSON(self):
+            return json.dumps({'user_id': self.user_id, 'first_name': self.first_name, 'last_name': self.last_name})
 
 
 
@@ -53,13 +80,6 @@ def from_sql(row):
     data.pop('_sa_instance_state')
     return data
 
-DEBUG=True
-app = Flask(__name__,
-            static_folder = "./dist/static",
-            template_folder = "./dist")
-sockets = Sockets(app)
-CORS(app)
-
 
 @sockets.route('/ws')
 def echo_socket(ws):
@@ -68,9 +88,11 @@ def echo_socket(ws):
         ws.send(message)
 
 
-@app.route('/users/{userID}', methods=["GET"])
+@app.route('/users/<userID>', methods=["GET"])
 def get_user_by_ID(userID):
-        return userID
+        user = Person.query.get(userID)
+        print(user)
+        return user.toJSON()
 
 @app.route('/tas/<taid>/classes', methods=["GET"])
 def get_class_list_by_taid_handler(taid):
@@ -106,7 +128,11 @@ def text_handler():
                 return
 
         if in_system(student_number, class_numbers):
-                process_msg(student_number, class_number, body)
+
+                res = process_msg(student_number, class_number, body)
+
+                if res is not None:
+                        send_to_student(student_number, class_number, res)
         elif (student_number, class_number) in waiting_list:
                 err = parse_signature(student_number, class_number, body)
 
@@ -125,10 +151,11 @@ def secret():
 @app.route('/', defaults={'path': ''})
 # @app.route('/<path:path>')
 def catch_all(path):
-    return render_template("index.html")
+        return render_template("index.html")
 
 if __name__ == "__main__":
     from gevent import pywsgi
     from geventwebsocket.handler import WebSocketHandler
     server = pywsgi.WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
+
     server.serve_forever()
