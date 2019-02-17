@@ -59,6 +59,9 @@ def text_handler():
         class_number = request.form['To']
         message_body = request.form['Body']
 
+        if not student_number or not class_number or not message_body:
+                return
+
         if inSystem(from_number, to_numbers):
                 process_msg(student_number, class_number, body)
                 waiting_list.append((student_number, class_number))
