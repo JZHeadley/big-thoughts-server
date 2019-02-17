@@ -11,7 +11,7 @@ client = Client(sid, token)
 ###### CLASS NUMBER: (540) 486-2896 ###################
 #######################################################
 
-# List of tuples 
+# List of tuples git
 # Tuples are arranged like so
 # (FromNumber, ToNumber)
 waiting_list = []
@@ -49,7 +49,6 @@ def send_to_student(student_number, class_number, msg):
                     to=student_number
                 
                 )
-
 
 
 
