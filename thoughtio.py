@@ -4,7 +4,7 @@ from twilio.rest import Client
 
 sid = os.getenv("TWILIO_SID")
 token = os.getenv("TWILIO_TOKEN")
-client = Client(account_sid, auth_token)
+client = Client(sid, token)
 
 # List of tuples 
 # Tuples are arranged like so
