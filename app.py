@@ -4,15 +4,14 @@ from flask_cors import CORS
 from . import  get_model
 from flask_sqlalchemy import SQLAlchemy
 
-from thoughtio import init_msg, parse_signature, parsing_failure
+from .thoughtio import init_msg, parse_signature, parsing_failure
 from twilio.twiml.messaging_response import MessagingResponse
 from twilio import twiml
 
-from query_logic import in_system, process_msg
+from .query_logic import in_system, process_msg
 
 import json
 
-from .thoughtio import init_msg
 import json
 db = SQLAlchemy()
 class Message(db.Model):

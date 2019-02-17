@@ -1,14 +1,4 @@
 from flask_sqlalchemy import SQLAlchemy
-<<<<<<< HEAD
-from sqlalchemy import create_engine
-#import model
-from sqlalchemy.sql import text
-
-
-def getClassListByTaid(taid):
-    return res
-=======
-import model
 from sqlalchemy.sql import text
 
 students = []
@@ -30,4 +20,3 @@ def process_msg(student_number, class_number, msg):
 def register_student(student_number, class_number, vnumber, firstname, lastname):
   # Because I'm tired of waiting
   students.append((student_number, class_number, vnumber, firstname, lastname))
->>>>>>> 7dde75ac6ff58a3dbe4803ac2773aa8c6ae1bfa4
