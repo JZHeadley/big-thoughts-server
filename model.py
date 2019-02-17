@@ -1,8 +1,6 @@
-from flask_sqlalchemy import SQLAlchemy
-from app import app
+#from app import db
 import json
 
-db = SQLAlchemy(app)
 class Message(db.Model):
     time_stamp = db.Column(db.Timestamp)
     content = db.Column(db.String(512))
