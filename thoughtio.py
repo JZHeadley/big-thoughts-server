@@ -1,6 +1,6 @@
 
 import os
-import twilio
+from twilio.rest import Client
 
 sid = os.getenv("TWILIO_SID")
 token = os.getenv("TWILIO_TOKEN")
@@ -11,7 +11,7 @@ client = Client(account_sid, auth_token)
 # (FromNumber, ToNumber)
 waiting_list = []
 
-def init_mesg(to_number, class_number):
+def init_msg(to_number, class_number):
     message = client.messages \
                 .create(
                      body="Welcome to BigThoughts! Please send your V# and Full Name so we can get you in the system first :)",
