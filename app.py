@@ -102,7 +102,11 @@ def text_handler():
                 return
 
         if in_system(student_number, class_numbers):
-                process_msg(student_number, class_number, body)
+
+                res = process_msg(student_number, class_number, body)
+
+                if res is not None:
+                        send_to_student(student_number, class_number, res)
         elif (student_number, class_number) in waiting_list:
                 err = parse_signature(student_number, class_number, body)
 
@@ -121,7 +125,7 @@ def secret():
 @app.route('/', defaults={'path': ''})
 # @app.route('/<path:path>')
 def catch_all(path):
-    return render_template("index.html")
+        return render_template("index.html")
 
 if __name__ == "__main__":
     from gevent import pywsgi
