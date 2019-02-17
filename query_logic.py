@@ -18,5 +18,5 @@ def process_msg(student_number, class_number, msg):
   return
 
 def register_student(student_number, class_number, vnumber, firstname, lastname):
-  # Because I'm tired of waiting
+  # MY database
   students.append((student_number, class_number, vnumber, firstname, lastname))
