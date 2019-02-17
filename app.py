@@ -19,7 +19,7 @@ def echo_socket(ws):
         ws.send(message)
 
 
-@app.route('/')
+@app.route('/hello')
 def hello():
     return 'Hello World!
 
@@ -39,9 +39,24 @@ def get_class_members(classID):
 def get_message_history():
         return classID, userID
 
-@app.route('/messages/{content}/{author}/{classID}/{userID}', methods=["POST"])
+@app.route('/messages', methods=["POST"])
 def post_message():
-        return content, author, classID, userID
+        return ""
+
+@app.route('/sms', methods=["POST"])
+def text_handler():
+
+        if inSystem(from_number, To_numbers):
+                process_msg(from_number, to_number, body)
+        elif (from_number, to_number) in waiting_list:
+                err = parse_signature(from_number, to_number, body)
+
+                if err is not None:
+                        parsing_failure(from_number, to_number)
+                else:
+                        waiting_list.remove((from_number, to_number)) 
+        else:
+                init_msg(from_number, to_number)
 
 
 if __name__ == "__main__":
