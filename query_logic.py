@@ -1,7 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
 
-students = []
 
 def in_system(student_number, class_number):
   for student in students:

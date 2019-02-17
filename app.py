@@ -7,7 +7,6 @@ from twilio.twiml.messaging_response import MessagingResponse
 from twilio import twiml
 
 from thoughtio import init_msg, parse_signature, parsing_failure, send_to_student
-from query_logic import in_system, process_msg
 
 from sqlalchemy.orm import synonym
 from sqlalchemy import text
@@ -165,32 +164,34 @@ def post_message_handler():
 
 def register_student(student_number, class_number, vnumber, firstname, lastname):
         pass
+def in_system(student_number, class_number):
+        return False
 
-@app.route('/sms', methods=["POST"])
+waiting_list=[]
+@app.route('/sms', methods=["GET","POST"])
 def text_handler():
         student_number = request.form['From']
         class_number = request.form['To']
         message_body = request.form['Body']
+        print(request.form)
 
-        if not student_number or not class_number or not message_body:
-                return
+        if in_system(student_number, class_number):
 
-        if in_system(student_number, class_numbers):
-
-                res = process_msg(student_number, class_number, body)
+                res = process_msg(student_number, class_number, message_body)
 
                 if res is not None:
                         send_to_student(student_number, class_number, res)
         elif (student_number, class_number) in waiting_list:
-                err = parse_signature(student_number, class_number, body)
-
-                if err is not None:
+                err = parse_signature(student_number, class_number, message_body)
+                print(err)
+                if err is True:
                         parsing_failure(student_number, class_number)
                 else:
                         waiting_list.remove((student_number, class_number)) 
         else:
                 init_msg(student_number, class_number)
                 waiting_list.append((student_number, class_number))
+        return "accepted"
 
 @app.route('/secret', methods=["GET"])
 def secret():

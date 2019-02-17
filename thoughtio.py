@@ -18,6 +18,9 @@ waiting_list = []
 def init_msg(student_number, class_number):
     send_to_student(student_number, class_number, "Welcome to BigThoughts! Please send your V# and Full Name so we can get you in the system first :)",)
 
+def register_student(from_number, to_number, studentId,firstName,lastName):
+    pass
+
 def parse_signature(from_number, to_number, body):
     personal_info = body.split(' ')
 
@@ -32,7 +35,7 @@ def parse_signature(from_number, to_number, body):
     #############################
     # Send into to the database 
     #############################
-    register_student(from_number, to_number, *personal_info)
+    register_student(from_number, to_number, personal_info[0],personal_info[1],personal_info[2])
 
     return False
 
