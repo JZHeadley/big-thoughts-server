@@ -1,18 +1,18 @@
 from flask import Flask, redirect, request
 from flask_sockets import Sockets
 from flask_cors import CORS
-from . import  get_model
 from flask_sqlalchemy import SQLAlchemy
 
-from .thoughtio import init_msg, parse_signature, parsing_failure
+from thoughtio import init_msg, parse_signature, parsing_failure
 from twilio.twiml.messaging_response import MessagingResponse
 from twilio import twiml
 
-from .query_logic import in_system, process_msg
+from query_logic import in_system, process_msg
 
 import json
 
 import json
+app = Flask(__name__)
 db = SQLAlchemy()
 class Message(db.Model):
     time_stamp = db.Column(db.Date())
@@ -55,7 +55,6 @@ def from_sql(row):
     data.pop('_sa_instance_state')
     return data
 DEBUG=True
-app = Flask(__name__)
 sockets = Sockets(app)
 CORS(app)
 
@@ -76,18 +75,14 @@ def echo_socket(ws):
 def hello():
     return 'Hello World!'
 
-@app.route('/users/{userID}', methods=["GET"])
+@app.route('/users/<userID>', methods=["GET"])
 def get_user_by_ID(userID):
         return userID
 
-@app.route('/tas/{taid}/classes', methods=["GET"])
+@app.route('/tas/<taid>/classes', methods=["GET"])
 def get_class_list_by_taid_handler(taid):
-        query = Session.query(Class_TA, Class).filter(Class_TA.class_num == Class.class_num).filter(Class_TA.ta_id == taid)
+        query = Class_TA.query.join(Class, Class_TA.class_num == Class.class_num).filter_by(Class_TA.ta_id == taid)
         return builtin_list(map(from_sql, query.all()))
-
-@app.route('/ta/{taid}/classes', methods=["GET"])
-def populate_data_for_TA_handler(taid):
-        return taid
 
 @app.route('/classes/<classID>', methods=["GET"])
 def get_class_members_handler(classID):
@@ -95,7 +90,7 @@ def get_class_members_handler(classID):
         query = Class.query.filter_by(user_id in distinct.user_id)
         return builtin_list(map(from_sql, query.all()))
 
-@app.route('/classes/{classID}/{userID}/messages', methods=["GET"])
+@app.route('/classes/<classID>/<userID>/messages', methods=["GET"])
 def get_message_history_handler():
         return classID, userID
 
